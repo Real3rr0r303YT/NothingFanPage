@@ -4,10 +4,9 @@
 # Network use: Termux/distro package mirrors + rootfs download during SETUP only.
 set -Eeuo pipefail
 
-readonly VERSION="1.0.0"
+readonly VERSION="1.0.1"
 : "${PREFIX:=/data/data/com.termux/files/usr}"
 : "${HOME:=/data/data/com.termux/files/home}"
-readonly ROOTFS_BASE="$PREFIX/var/lib/proot-distro/installed-rootfs"
 readonly PLUGIN_DIR="$PREFIX/etc/proot-distro"
 readonly DLCACHE="$PREFIX/var/lib/proot-distro/dlcache"
 
@@ -160,12 +159,17 @@ prepare_distro() {
   esac
 }
 
+# proot-distro changed its on-disk layout between versions, so never assume a rootfs path:
+# ask proot-distro itself whether the container is usable, and talk to it only via `login`.
+guest_sh() { proot-distro login "$ALIAS" -- /bin/sh -c "$1"; }
+
 install_distro() {
-  if [[ -d $ROOTFS_BASE/$ALIAS ]]; then
+  if guest_sh ':' >/dev/null 2>&1; then
     ok "$ALIAS already installed - reusing"
   else
     info "Installing $ALIAS via proot-distro"
     proot-distro install "$ALIAS"
+    guest_sh ':' >/dev/null 2>&1 || die "$ALIAS installed but 'proot-distro login $ALIAS' fails; run it manually to see why."
   fi
 }
 
@@ -309,15 +313,27 @@ fi
 RB_SESSION
 }
 
+# Copy stdin into a file INSIDE the container (works for every distro and every proot-distro layout).
+guest_put() { # dest mode
+  proot-distro login "$ALIAS" -- /bin/sh -c 'mkdir -p "$(dirname -- "$1")" && cat >"$1" && chmod "$2" "$1"' sh "$1" "$2"
+}
+guest_has() { # path -> true if non-empty file exists inside the container
+  proot-distro login "$ALIAS" -- /bin/sh -c 'test -s "$1"' sh "$1" >/dev/null 2>&1
+}
+
 provision() {
-  local rf="$ROOTFS_BASE/$ALIAS"
-  mkdir -p "$rf/root" "$rf/usr/local/bin"
-  write_provision >"$rf/root/rb-provision.sh"
-  write_session   >"$rf/usr/local/bin/rb-session"
-  chmod 755 "$rf/root/rb-provision.sh" "$rf/usr/local/bin/rb-session"
+  local prov=/root/rb-provision.sh sess=/usr/local/bin/rb-session
+  info "Copying provisioning files into the $ALIAS container"
+  write_provision | guest_put "$prov" 755
+  write_session   | guest_put "$sess" 755
+  guest_has "$prov" || die "Could not place $prov inside the $ALIAS container."
+  guest_has "$sess" || die "Could not place $sess inside the $ALIAS container."
+  ok "Files present inside the container"
+
   info "Provisioning $KEY (this takes a while)"
-  proot-distro login "$ALIAS" -- /bin/sh /root/rb-provision.sh "$USER_NAME" "$DE"
-  rm -f "$rf/root/rb-provision.sh"
+  proot-distro login "$ALIAS" -- /bin/sh "$prov" "$USER_NAME" "$DE" </dev/null
+  proot-distro login "$ALIAS" -- /bin/sh -c 'rm -f "$1"' sh "$prov" || true
+  guest_has "$sess" || die "$sess disappeared during provisioning."
   ok "Guest provisioned"
 }
 

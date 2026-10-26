@@ -38,6 +38,47 @@ Notes:
 - On Android 12+ the phantom-process killer can stop PRoot sessions:
   `adb shell device_config put activity_manager max_phantom_processes 2147483647`
 
+## How the setup works (universal distro support)
+
+`rombooter-setup.sh` never assumes where `proot-distro` keeps a container on disk. That layout changed between `proot-distro` versions and is the reason for the 1.0.0 failure below. Instead it talks to every distro the same way, through `proot-distro login`:
+
+1. **Detect**: `proot-distro login <distro> -- true` decides whether the container is already installed. If not, it runs `proot-distro install`.
+2. **Copy in**: the provisioning script (`/root/rb-provision.sh`) and the session launcher (`/usr/local/bin/rb-session`) are streamed into the container through stdin, so they land in the container's own root regardless of host paths.
+3. **Verify**: before running anything, the script checks from inside the container that both files exist and are non-empty. If not, it stops with a clear error instead of a cryptic `/bin/sh` message.
+4. **Provision**: a per-family package script runs inside the container: `apt` (Debian, Ubuntu, Kali), `pacman` (Arch), `apk` (Alpine), `dnf` (Fedora), `emerge` (Gentoo). Kali and Gentoo are not in `proot-distro` itself, so a small plugin is registered for them first.
+
+Re-running the script is safe: an installed container is reused, users and packages are only added when missing.
+
+### Fixes in 1.0.1
+
+- **Fixed:** `/bin/sh: 0: cannot open /root/rb-provision.sh: No such file` during provisioning. 1.0.0 wrote the file to a hard-coded host path (`.../installed-rootfs/<distro>/root/`), which does not match the container's real root on newer `proot-distro` layouts. The file is now copied in through `proot-distro login`.
+- **Fixed:** the "already installed" check no longer looks for a host directory, so a leftover empty folder can no longer make an uninstalled distro look installed.
+- **Added:** explicit existence checks inside the container before and after provisioning.
+
+## Running the setup properly
+
+Use Termux from F-Droid or GitHub (not the Play Store build), then in Termux:
+
+```bash
+pkg install -y curl
+curl -fsSLO https://raw.githubusercontent.com/Real3rr0r303YT/RomBooter/main/rombooter-setup.sh
+bash rombooter-setup.sh --distro debian --de xfce --yes
+```
+
+Then start and stop the desktop:
+
+```bash
+~/start_debian.sh --res 1272x576 --pass <6-8 alphanumeric chars> --de xfce
+~/start_debian.sh --stop
+```
+
+The app calls exactly this script, so `~/start_<distro>.sh` must exist (it is created by the setup) before pressing **Boot**.
+
+Troubleshooting:
+- Setup failed halfway: just run the same command again.
+- Desktop does not come up: `cat ~/.rombooter/<distro>.log`.
+- Test the container by hand: `proot-distro login debian`.
+
 ## Repository layout
 
 ```
