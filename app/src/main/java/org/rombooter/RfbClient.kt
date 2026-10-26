@@ -165,7 +165,7 @@ class RfbClient(private val password: String, private val port: Int = 5901) {
     private fun post(m: ByteArray) { outbox.trySend(m) }
 
     private fun updateReq(inc: Boolean, w: Int, h: Int) = ByteBuffer.allocate(10).apply {
-        put(3); put(if (inc) 1 else 0); putShort(0); putShort(0); putShort(w.toShort()); putShort(h.toShort())
+        put(3); put((if (inc) 1 else 0).toByte()); putShort(0); putShort(0); putShort(w.toShort()); putShort(h.toShort())
     }.array()
 
     private fun pointerMsg(x: Int, y: Int, mask: Int) = ByteBuffer.allocate(6).apply {
@@ -173,7 +173,7 @@ class RfbClient(private val password: String, private val port: Int = 5901) {
     }.array()
 
     private fun keyMsg(sym: Int, down: Boolean) = ByteBuffer.allocate(8).apply {
-        put(4); put(if (down) 1 else 0); putShort(0); putInt(sym)
+        put(4); put((if (down) 1 else 0).toByte()); putShort(0); putInt(sym)
     }.array()
 
     /** mask: 1 = left, 2 = middle, 4 = right, 0 = release. */
