@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Fake proot-distro for tests/start-script.sh: `login ALIAS [--user U] -- CMD...`
+set -u
+[[ ${1:-} == login ]] || { echo "fake proot-distro: unsupported '$*'" >&2; exit 1; }
+shift 2
+while [[ $1 != -- ]]; do shift; done
+shift
+if [[ $* == *"test -x /usr/local/bin/rb-session"* ]]; then
+  [[ -z ${FAKE_UNPROVISIONED:-} ]]; exit
+fi
+if [[ $1 == /usr/local/bin/rb-session ]]; then
+  shift
+  printf '%s\n' "$*" >"$FAKE_DIR/argv"
+  IFS= read -r pass || true
+  printf '%s\n' "$pass" >"$FAKE_DIR/pass"
+  exec python3 "$(dirname "$0")/fake_rfb.py"
+fi
+exec "$@"

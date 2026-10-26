@@ -1,0 +1,2 @@
+# Single-quoted scripts passed to `sh -c` are expanded inside the container on purpose.
+disable=SC2016
