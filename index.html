@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!--
+  Nothing Fan-Made Ecosystem – landing page
+  Copyright (C) 2026 Real3rr0r303YT
+  SPDX-License-Identifier: GPL-3.0-or-later
+
+  Self-contained: no external fonts, scripts, trackers or cookies.
+  Unofficial fan project, not affiliated with Nothing Technology Limited.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nothing Fan-Made Ecosystem</title>
+  <meta name="description" content="Privacy-first, open-source apps in Nothing OS style: NothingCall, NothingNotes and NothingPacker. 100% offline, GPLv3.">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23DA291C'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --black: #000000;
+      --surface: #0a0a0a;
+      --line: #222222;
+      --line-strong: #333333;
+      --white: #ffffff;
+      --grey: #8c8c8c;
+      --grey-dim: #555555;
+      --red: #DA291C;
+      --red-soft: rgba(218, 41, 28, 0.14);
+      --radius: 20px;
+      --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--black);
+      /* Fine Nothing-style dot raster */
+      background-image: radial-gradient(circle, #1d1d1d 1px, transparent 1.3px);
+      background-size: 22px 22px;
+      background-position: center top;
+      color: var(--white);
+      font-family: var(--sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 720px) { .wrap { padding: 0 32px; } }
+
+    /* ---------- Dot-matrix SVG text ---------- */
+    /* Size = dot pitch in px (data-size); never wider than the container. */
+    span.dm { display: block; max-width: 100%; }
+    svg.dm { display: block; height: auto; max-width: 100%; overflow: visible; }
+    svg.dm circle { fill: currentColor; }
+    svg.dm circle.accent { fill: var(--red); }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex: none; }
+    .dot.pulse { animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    @media (prefers-reduced-motion: reduce) { .dot.pulse { animation: none; } html { scroll-behavior: auto; } }
+
+    .lang {
+      display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+    }
+    .lang button {
+      background: none; border: 0; color: var(--grey); font: inherit; cursor: pointer;
+      padding: 6px 12px; border-radius: 999px; transition: background .2s, color .2s;
+    }
+    .lang button[aria-pressed="true"] { background: var(--white); color: var(--black); }
+    .lang button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding: 88px 0 72px; }
+    @media (min-width: 720px) { .hero { padding: 128px 0 104px; } }
+    .label {
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--grey);
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .hero h1 { margin: 28px 0 0; font-weight: 400; }
+    .hero h1 .dm-hero { color: var(--white); }
+    .hero h1 .dm-sub { margin-top: 18px; color: var(--grey); }
+    .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+    .badge {
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 14px; color: var(--white);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .badge.red { border-color: var(--red); color: var(--red); }
+    .hero p.lead { margin-top: 28px; max-width: 620px; font-size: clamp(17px, 2.2vw, 21px); color: #cfcfcf; }
+    .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 44px; padding: 0 20px; border-radius: 999px;
+      font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+      border: 1px solid var(--line-strong); color: var(--white); background: transparent;
+      transition: border-color .2s, background .2s, color .2s, transform .2s;
+    }
+    .btn:hover { border-color: var(--white); }
+    .btn:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+    .btn.primary { background: var(--red); border-color: var(--red); }
+    .btn.primary:hover { background: #ef3324; border-color: #ef3324; }
+    .btn svg { width: 16px; height: 16px; flex: none; }
+
+    /* ---------- Sections ---------- */
+    section { padding: 64px 0; border-top: 1px solid var(--line); }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+    .section-head h2 { font-weight: 400; }
+    .section-head .label { margin-bottom: 4px; }
+
+    /* ---------- Principles ---------- */
+    .principles { display: grid; gap: 12px; grid-template-columns: 1fr; }
+    @media (min-width: 720px) { .principles { grid-template-columns: repeat(3, 1fr); } }
+    .principle { border: 1px solid var(--line); border-radius: var(--radius); background: rgba(0,0,0,.8); padding: 24px; }
+    .principle .dm { color: var(--white); }
+    .principle h3 { margin-top: 18px; font-size: 16px; font-weight: 500; }
+    .principle p { margin-top: 6px; color: var(--grey); font-size: 14px; }
+
+    /* ---------- Project cards ---------- */
+    .cards { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+    .card {
+      position: relative; display: flex; flex-direction: column;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.85); padding: 28px 24px 24px;
+      transition: border-color .25s, transform .25s;
+    }
+    .card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+    .card:hover .card-index { color: var(--red); }
+    @media (prefers-reduced-motion: reduce) { .card, .card:hover { transition: none; transform: none; } }
+    .card-top { display: flex; justify-content: space-between; align-items: center; }
+    .card-index { font-family: var(--mono); font-size: 12px; color: var(--grey-dim); letter-spacing: .14em; transition: color .25s; }
+    .card .dm { margin-top: 26px; color: var(--white); }
+    .card .tagline { margin-top: 18px; font-size: 18px; font-weight: 500; line-height: 1.35; }
+    .card ul { list-style: none; margin: 18px 0 0; display: grid; gap: 8px; }
+    .card li { color: var(--grey); font-size: 14px; display: flex; gap: 12px; }
+    .card li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--grey-dim); margin-top: 9px; flex: none; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 22px; }
+    .chip { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+    .card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 28px; }
+    .card .actions .btn { flex: 1 1 140px; }
+    .release-link { display: block; margin-top: 12px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--grey-dim); text-decoration: none; overflow-wrap: anywhere; }
+    .release-link:hover { color: var(--red); }
+
+    /* ---------- Donate ---------- */
+    .donate {
+      border: 1px solid var(--line); border-radius: calc(var(--radius) + 8px); background: rgba(0,0,0,.85);
+      padding: 40px 24px; text-align: center; display: grid; justify-items: center; gap: 18px;
+    }
+    @media (min-width: 720px) { .donate { padding: 56px 48px; } }
+    .donate p { max-width: 520px; color: var(--grey); }
+    .btn.coffee { border-color: var(--white); min-height: 52px; padding: 0 28px; font-size: 14px; }
+    .btn.coffee:hover { background: var(--white); color: var(--black); }
+    .btn.coffee .dot { transition: transform .2s; }
+    .btn.coffee:hover .dot { transform: scale(1.4); }
+
+    /* ---------- Footer ---------- */
+    footer { border-top: 1px solid var(--line); padding: 40px 0 56px; color: var(--grey-dim); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; }
+    footer .wrap { display: grid; gap: 10px; }
+    footer a { color: var(--grey); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+    footer a:hover { color: var(--white); }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    noscript .fallback { font-family: var(--mono); letter-spacing: .1em; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="Nothing Fan-Made Ecosystem">
+        <span class="dm" data-dm="NFME" data-size="2.6"></span>
+        <span class="dot pulse" aria-hidden="true"></span>
+      </a>
+      <div class="lang" role="group" aria-label="Language / Sprache">
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ================= HERO ================= -->
+    <div class="hero">
+      <div class="wrap">
+        <span class="label"><span class="dot" aria-hidden="true"></span><span data-i18n="hero.kicker">Unofficial · Community-built</span></span>
+        <h1>
+          <span class="sr-only">Nothing Fan-Made Ecosystem</span>
+          <span class="dm dm-hero" data-dm="NOTHING" data-size="12" data-accent="last" aria-hidden="true"></span>
+          <span class="dm dm-sub" data-dm="FAN-MADE ECOSYSTEM" data-size="4.6" aria-hidden="true"></span>
+        </h1>
+        <div class="badges">
+          <span class="badge red"><span class="dot" aria-hidden="true"></span>Privacy-First</span>
+          <span class="badge">Open Source · GPLv3</span>
+        </div>
+        <p class="lead" data-i18n="hero.subtitle">100% offline, no unnecessary permissions, uncompromising design.</p>
+        <div class="cta">
+          <a class="btn primary" href="#projects" data-i18n="hero.cta">Explore projects</a>
+          <a class="btn" href="https://github.com/Real3rr0r303YT" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PRINCIPLES ================= -->
+    <section aria-labelledby="principles-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="principles-title"><span class="sr-only" data-i18n="principles.title">Principles</span><span class="dm" data-dm-i18n="principles.dm" data-size="4" data-accent="last" aria-hidden="true"></span></h2>
+          <span class="label" data-i18n="principles.kicker">What every app promises</span>
+        </div>
+        <div class="principles">
+          <article class="principle">
+            <span class="dm" data-dm="0" data-size="5" data-accent="last" aria-hidden="true"></span>
+            <h3 data-i18n="p1.title">Trackers & analytics</h3>
+            <p data-i18n="p1.text">No telemetry, no ads, no accounts. Your data stays yours – on your device.</p>
+          </article>
+          <article class="principle">
+            <span class="dm" data-dm="100%" data-size="5" aria-hidden="true"></span>
+            <h3 data-i18n="p2.title">Offline & minimal permissions</h3>
+            <p data-i18n="p2.text">Apps only request what they truly need. NothingNotes and NothingPacker don't even have internet access.</p>
+          </article>
+          <article class="principle">
+            <span class="dm" data-dm="GPLV3" data-size="5" aria-hidden="true"></span>
+            <h3 data-i18n="p3.title">Free & open source</h3>
+            <p data-i18n="p3.text">Every line of code is public and licensed under the GNU GPL v3 – audit it, fork it, improve it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PROJECTS ================= -->
+    <section id="projects" aria-labelledby="projects-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="projects-title"><span class="sr-only" data-i18n="projects.title">Projects</span><span class="dm" data-dm-i18n="projects.dm" data-size="4" data-accent="last" aria-hidden="true"></span></h2>
+          <span class="label" data-i18n="projects.kicker">03 apps · one design language</span>
+        </div>
+
+        <div class="cards">
+          <!-- NothingCall -->
+          <article class="card" aria-labelledby="call-title">
+            <div class="card-top"><span class="card-index">01</span><span class="dot" aria-hidden="true"></span></div>
+            <h3 id="call-title"><span class="sr-only">NothingCall</span><span class="dm" data-dm="NOTHINGCALL" data-size="3.2" aria-hidden="true"></span></h3>
+            <p class="tagline" data-i18n="call.tagline">The privacy-friendly dialer app.</p>
+            <ul>
+              <li data-i18n="call.f1">Calls, contacts & call log – without cloud sync</li>
+              <li data-i18n="call.f2">No ads, no trackers, no caller-ID data sharing</li>
+              <li data-i18n="call.f3">OLED black UI with dot-matrix dial pad</li>
+            </ul>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Kotlin</span><span class="chip">GPLv3</span></div>
+            <div class="actions">
+              <a class="btn primary" href="https://github.com/Real3rr0r303YT/NothingCall/releases/latest" target="_blank" rel="noopener noreferrer" aria-label="Download NothingCall (GitHub Releases)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>
+                <span data-i18n="btn.download">Download</span>
+              </a>
+              <a class="btn" href="https://github.com/Real3rr0r303YT/NothingCall" target="_blank" rel="noopener noreferrer" aria-label="NothingCall – GitHub repository">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                <span data-i18n="btn.github">GitHub</span>
+              </a>
+            </div>
+            <a class="release-link" href="https://github.com/Real3rr0r303YT/NothingCall/releases/latest" target="_blank" rel="noopener noreferrer">github.com/Real3rr0r303YT/NothingCall/releases/latest</a>
+          </article>
+
+          <!-- NothingNotes -->
+          <article class="card" aria-labelledby="notes-title">
+            <div class="card-top"><span class="card-index">02</span><span class="dot" aria-hidden="true"></span></div>
+            <h3 id="notes-title"><span class="sr-only">NothingNotes</span><span class="dm" data-dm="NOTHINGNOTES" data-size="3.2" aria-hidden="true"></span></h3>
+            <p class="tagline" data-i18n="notes.tagline">The minimalist notes app with Markdown & local encryption.</p>
+            <ul>
+              <li data-i18n="notes.f1">Markdown editor with to-do lists</li>
+              <li data-i18n="notes.f2">Optional AES-256 via Android Keystore</li>
+              <li data-i18n="notes.f3">No INTERNET permission – technically offline</li>
+            </ul>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Kotlin</span><span class="chip">Compose</span><span class="chip">GPLv3</span></div>
+            <div class="actions">
+              <a class="btn primary" href="https://github.com/Real3rr0r303YT/NothingNotes/releases/latest" target="_blank" rel="noopener noreferrer" aria-label="Download NothingNotes (GitHub Releases)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>
+                <span data-i18n="btn.download">Download</span>
+              </a>
+              <a class="btn" href="https://github.com/Real3rr0r303YT/NothingNotes" target="_blank" rel="noopener noreferrer" aria-label="NothingNotes – GitHub repository">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                <span data-i18n="btn.github">GitHub</span>
+              </a>
+            </div>
+            <a class="release-link" href="https://github.com/Real3rr0r303YT/NothingNotes/releases/latest" target="_blank" rel="noopener noreferrer">github.com/Real3rr0r303YT/NothingNotes/releases/latest</a>
+          </article>
+
+          <!-- NothingPacker -->
+          <article class="card" aria-labelledby="packer-title">
+            <div class="card-top"><span class="card-index">03</span><span class="dot" aria-hidden="true"></span></div>
+            <h3 id="packer-title"><span class="sr-only">NothingPacker</span><span class="dm" data-dm="NOTHINGPACKER" data-size="3.2" aria-hidden="true"></span></h3>
+            <p class="tagline" data-i18n="packer.tagline">The Android tool for analysing, extracting and re-packaging APK ⇄ IPA files.</p>
+            <ul>
+              <li data-i18n="packer.f1">Reads manifests, Info.plist, permissions & components</li>
+              <li data-i18n="packer.f2">Extracts assets & re-packages the app structure</li>
+              <li data-i18n="packer.f3">No permissions – processed 100% on your phone</li>
+            </ul>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Kotlin</span><span class="chip">Compose</span><span class="chip">GPLv3</span></div>
+            <div class="actions">
+              <a class="btn primary" href="https://github.com/Real3rr0r303YT/NothingPacker/releases/latest" target="_blank" rel="noopener noreferrer" aria-label="Download NothingPacker (GitHub Releases)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>
+                <span data-i18n="btn.download">Download</span>
+              </a>
+              <a class="btn" href="https://github.com/Real3rr0r303YT/NothingPacker" target="_blank" rel="noopener noreferrer" aria-label="NothingPacker – GitHub repository">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                <span data-i18n="btn.github">GitHub</span>
+              </a>
+            </div>
+            <a class="release-link" href="https://github.com/Real3rr0r303YT/NothingPacker/releases/latest" target="_blank" rel="noopener noreferrer">github.com/Real3rr0r303YT/NothingPacker/releases/latest</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DONATE ================= -->
+    <section id="support" aria-labelledby="support-title">
+      <div class="wrap">
+        <div class="donate">
+          <span class="dot pulse" aria-hidden="true"></span>
+          <h2 id="support-title"><span class="sr-only" data-i18n="support.title">Support</span><span class="dm" data-dm-i18n="support.dm" data-size="4" data-accent="last" aria-hidden="true"></span></h2>
+          <p data-i18n="support.text">All projects are free and open source – built in my spare time. If they're useful to you, a coffee keeps development going.</p>
+          <a class="btn coffee" href="https://www.buymeacoffee.com/3rr0r303yt" target="_blank" rel="noopener noreferrer">
+            <span class="dot" aria-hidden="true"></span>
+            Buy Me a Coffee
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Real3rr0r303YT · <span data-i18n="footer.license">Licensed under the</span> <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU GPL v3</a></span>
+      <span data-i18n="footer.disclaimer">Unofficial fan project. Not affiliated with Nothing Technology Limited.</span>
+      <span data-i18n="footer.privacy">This website uses no cookies, no trackers and loads no external resources.</span>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ---------- Translations ---------- */
+    var I18N = {
+      en: {
+        "hero.kicker": "Unofficial · Community-built",
+        "hero.subtitle": "100% offline, no unnecessary permissions, uncompromising design.",
+        "hero.cta": "Explore projects",
+        "principles.title": "Principles",
+        "principles.dm": "PRINCIPLES",
+        "principles.kicker": "What every app promises",
+        "p1.title": "Trackers & analytics",
+        "p1.text": "No telemetry, no ads, no accounts. Your data stays yours – on your device.",
+        "p2.title": "Offline & minimal permissions",
+        "p2.text": "Apps only request what they truly need. NothingNotes and NothingPacker don't even have internet access.",
+        "p3.title": "Free & open source",
+        "p3.text": "Every line of code is public and licensed under the GNU GPL v3 – audit it, fork it, improve it.",
+        "projects.title": "Projects",
+        "projects.dm": "PROJECTS",
+        "projects.kicker": "03 apps · one design language",
+        "call.tagline": "The privacy-friendly dialer app.",
+        "call.f1": "Calls, contacts & call log – without cloud sync",
+        "call.f2": "No ads, no trackers, no caller-ID data sharing",
+        "call.f3": "OLED black UI with dot-matrix dial pad",
+        "notes.tagline": "The minimalist notes app with Markdown & local encryption.",
+        "notes.f1": "Markdown editor with to-do lists",
+        "notes.f2": "Optional AES-256 via Android Keystore",
+        "notes.f3": "No INTERNET permission – technically offline",
+        "packer.tagline": "The Android tool for analysing, extracting and re-packaging APK ⇄ IPA files.",
+        "packer.f1": "Reads manifests, Info.plist, permissions & components",
+        "packer.f2": "Extracts assets & re-packages the app structure",
+        "packer.f3": "No permissions – processed 100% on your phone",
+        "btn.github": "GitHub",
+        "btn.download": "Download",
+        "support.title": "Support",
+        "support.dm": "SUPPORT",
+        "support.text": "All projects are free and open source – built in my spare time. If they're useful to you, a coffee keeps development going.",
+        "footer.license": "Licensed under the",
+        "footer.disclaimer": "Unofficial fan project. Not affiliated with Nothing Technology Limited.",
+        "footer.privacy": "This website uses no cookies, no trackers and loads no external resources."
+      },
+      de: {
+        "hero.kicker": "Inoffiziell · Von der Community",
+        "hero.subtitle": "100 % offline, ohne unnötige Berechtigungen, kompromissloses Design.",
+        "hero.cta": "Projekte entdecken",
+        "principles.title": "Prinzipien",
+        "principles.dm": "PRINZIPIEN",
+        "principles.kicker": "Was jede App verspricht",
+        "p1.title": "Tracker & Analytics",
+        "p1.text": "Keine Telemetrie, keine Werbung, keine Konten. Deine Daten bleiben deine – auf deinem Gerät.",
+        "p2.title": "Offline & minimale Berechtigungen",
+        "p2.text": "Die Apps fordern nur an, was sie wirklich brauchen. NothingNotes und NothingPacker haben nicht einmal Internetzugriff.",
+        "p3.title": "Frei & Open Source",
+        "p3.text": "Jede Codezeile ist öffentlich und steht unter der GNU GPL v3 – prüfen, forken, verbessern.",
+        "projects.title": "Projekte",
+        "projects.dm": "PROJEKTE",
+        "projects.kicker": "03 Apps · eine Designsprache",
+        "call.tagline": "Die datenschutzfreundliche Telefon-App.",
+        "call.f1": "Anrufe, Kontakte & Anrufliste – ohne Cloud-Sync",
+        "call.f2": "Keine Werbung, keine Tracker, keine Weitergabe von Anruferdaten",
+        "call.f3": "Tiefschwarzes OLED-Design mit Dot-Matrix-Wähltastatur",
+        "notes.tagline": "Die minimalistische Notizen-App mit Markdown & lokaler Verschlüsselung.",
+        "notes.f1": "Markdown-Editor mit To-do-Listen",
+        "notes.f2": "Optional AES-256 über den Android Keystore",
+        "notes.f3": "Keine INTERNET-Berechtigung – technisch offline",
+        "packer.tagline": "Das Android-Tool zum Analysieren, Entpacken und Umpacken von APK ⇄ IPA.",
+        "packer.f1": "Liest Manifest, Info.plist, Berechtigungen & Komponenten",
+        "packer.f2": "Entpackt Assets & packt die App-Struktur um",
+        "packer.f3": "Keine Berechtigungen – 100 % auf dem Smartphone verarbeitet",
+        "btn.github": "GitHub",
+        "btn.download": "Herunterladen",
+        "support.title": "Unterstützen",
+        "support.dm": "UNTERSTÜTZEN",
+        "support.text": "Alle Projekte sind kostenlos und Open Source – entwickelt in meiner Freizeit. Wenn sie dir helfen, hält ein Kaffee die Entwicklung am Laufen.",
+        "footer.license": "Lizenziert unter der",
+        "footer.disclaimer": "Inoffizielles Fan-Projekt. Nicht mit Nothing Technology Limited verbunden.",
+        "footer.privacy": "Diese Website nutzt keine Cookies, keine Tracker und lädt keine externen Ressourcen."
+      }
+    };
+
+    /* ---------- 5×7 dot-matrix font (same as the apps) ---------- */
+    var FONT = {
+      "A": [".###.","#...#","#...#","#####","#...#","#...#","#...#"],
+      "B": ["####.","#...#","#...#","####.","#...#","#...#","####."],
+      "C": [".###.","#...#","#....","#....","#....","#...#",".###."],
+      "D": ["####.","#...#","#...#","#...#","#...#","#...#","####."],
+      "E": ["#####","#....","#....","####.","#....","#....","#####"],
+      "F": ["#####","#....","#....","####.","#....","#....","#...."],
+      "G": [".###.","#...#","#....","#.###","#...#","#...#",".####"],
+      "H": ["#...#","#...#","#...#","#####","#...#","#...#","#...#"],
+      "I": ["###",".#.",".#.",".#.",".#.",".#.","###"],
+      "J": ["..###","...#.","...#.","...#.","#..#.","#..#.",".##.."],
+      "K": ["#...#","#..#.","#.#..","##...","#.#..","#..#.","#...#"],
+      "L": ["#....","#....","#....","#....","#....","#....","#####"],
+      "M": ["#...#","##.##","#.#.#","#.#.#","#...#","#...#","#...#"],
+      "N": ["#...#","#...#","##..#","#.#.#","#..##","#...#","#...#"],
+      "O": [".###.","#...#","#...#","#...#","#...#","#...#",".###."],
+      "P": ["####.","#...#","#...#","####.","#....","#....","#...."],
+      "Q": [".###.","#...#","#...#","#...#","#.#.#","#..#.",".##.#"],
+      "R": ["####.","#...#","#...#","####.","#.#..","#..#.","#...#"],
+      "S": [".####","#....","#....",".###.","....#","....#","####."],
+      "T": ["#####","..#..","..#..","..#..","..#..","..#..","..#.."],
+      "U": ["#...#","#...#","#...#","#...#","#...#","#...#",".###."],
+      "V": ["#...#","#...#","#...#","#...#","#...#",".#.#.","..#.."],
+      "W": ["#...#","#...#","#...#","#.#.#","#.#.#","#.#.#",".#.#."],
+      "X": ["#...#","#...#",".#.#.","..#..",".#.#.","#...#","#...#"],
+      "Y": ["#...#","#...#",".#.#.","..#..","..#..","..#..","..#.."],
+      "Z": ["#####","....#","...#.","..#..",".#...","#....","#####"],
+      "Ä": ["#...#",".....",".###.","#...#","#####","#...#","#...#"],
+      "Ö": ["#...#",".....",".###.","#...#","#...#","#...#",".###."],
+      "Ü": ["#...#",".....","#...#","#...#","#...#","#...#",".###."],
+      "0": [".###.","#...#","#..##","#.#.#","##..#","#...#",".###."],
+      "1": [".#.","##.",".#.",".#.",".#.",".#.","###"],
+      "2": [".###.","#...#","....#","...#.","..#..",".#...","#####"],
+      "3": ["####.","....#","....#",".###.","....#","....#","####."],
+      "4": ["...#.","..##.",".#.#.","#..#.","#####","...#.","...#."],
+      "5": ["#####","#....","####.","....#","....#","#...#",".###."],
+      "6": [".###.","#....","#....","####.","#...#","#...#",".###."],
+      "7": ["#####","....#","...#.","..#..",".#...",".#...",".#..."],
+      "8": [".###.","#...#","#...#",".###.","#...#","#...#",".###."],
+      "9": [".###.","#...#","#...#",".####","....#","....#",".###."],
+      " ": ["...","...","...","...","...","...","..."],
+      "-": ["....","....","....","####","....","....","...."],
+      ".": [".",".",".",".",".",".","#"],
+      "%": ["##..#","##..#","...#.","..#..",".#...","#..##","#..##"]
+    };
+    var SVG_NS = "http://www.w3.org/2000/svg";
+
+    /** Builds an SVG of circles; 1 viewBox unit = 1 dot pitch. */
+    function dotMatrix(text, accentLast) {
+      var chars = Array.from(text.toUpperCase()).map(function (c) { return FONT[c] ? c : " "; });
+      var cols = chars.reduce(function (sum, c) { return sum + FONT[c][0].length + 1; }, 0) - 1;
+      var svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("viewBox", "0 0 " + cols + " 7");
+      svg.setAttribute("class", "dm-svg");
+      svg.setAttribute("focusable", "false");
+      svg.setAttribute("aria-hidden", "true");
+      var x = 0;
+      chars.forEach(function (c, i) {
+        var rows = FONT[c];
+        rows.forEach(function (row, y) {
+          Array.from(row).forEach(function (cell, dx) {
+            if (cell !== "#") return;
+            var dot = document.createElementNS(SVG_NS, "circle");
+            dot.setAttribute("cx", x + dx + 0.5);
+            dot.setAttribute("cy", y + 0.5);
+            dot.setAttribute("r", 0.36);
+            if (accentLast && i === chars.length - 1) dot.setAttribute("class", "accent");
+            svg.appendChild(dot);
+          });
+        });
+        x += rows[0].length + 1;
+      });
+      return { svg: svg, cols: cols };
+    }
+
+    function renderDotMatrix(el, text) {
+      var built = dotMatrix(text, el.getAttribute("data-accent") === "last");
+      built.svg.classList.add("dm");
+      var pitch = parseFloat(el.getAttribute("data-size")) || 4;
+      built.svg.style.width = built.cols * pitch + "px";
+      el.replaceChildren(built.svg);
+    }
+
+    /* ---------- Language handling ---------- */
+    var STORAGE_KEY = "nfme-lang";
+
+    function storedLang() {
+      try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+    }
+    function storeLang(lang) {
+      try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* private mode – ignore */ }
+    }
+    function detectLang() {
+      var saved = storedLang();
+      if (saved === "de" || saved === "en") return saved;
+      var nav = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
+      return nav.toLowerCase().indexOf("de") === 0 ? "de" : "en";
+    }
+
+    function applyLang(lang) {
+      var dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(function (el) {
+        var value = dict[el.getAttribute("data-i18n")];
+        if (value) el.textContent = value;
+      });
+      document.querySelectorAll("[data-dm-i18n]").forEach(function (el) {
+        renderDotMatrix(el, dict[el.getAttribute("data-dm-i18n")]);
+      });
+      document.querySelectorAll(".lang button").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", String(btn.getAttribute("data-lang") === lang));
+      });
+    }
+
+    document.querySelectorAll(".lang button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var lang = btn.getAttribute("data-lang");
+        storeLang(lang);
+        applyLang(lang);
+      });
+    });
+
+    // Static dot-matrix texts (language independent)
+    document.querySelectorAll("[data-dm]").forEach(function (el) {
+      renderDotMatrix(el, el.getAttribute("data-dm"));
+    });
+    applyLang(detectLang());
+  })();
+  </script>
+</body>
+</html>
