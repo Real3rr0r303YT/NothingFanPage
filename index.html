@@ -12,7 +12,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Nothing Fan-Made Ecosystem</title>
-  <meta name="description" content="Privacy-first, open-source apps in Nothing OS style: NothingCall, NothingNotes, NothingPacker, NothingClock and Calculator. 100% offline, GPLv3.">
+  <meta name="description" content="Privacy-first, open-source apps in Nothing OS style: NothingCall, NothingNotes, NothingPacker, NothingClock, Calculator and NothingCalendar. 100% offline, GPLv3.">
   <meta name="theme-color" content="#000000">
   <meta name="color-scheme" content="dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23DA291C'/%3E%3C/svg%3E">
@@ -104,6 +104,16 @@
       display: inline-flex; align-items: center; gap: 8px;
     }
     .badge.red { border-color: var(--red); color: var(--red); }
+    .maker {
+      display: inline-flex; align-items: center; gap: 12px; margin-top: 14px;
+      padding: 10px 18px; border: 1px dashed var(--line-strong); border-radius: 999px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none;
+      color: var(--grey); transition: border-color .2s, color .2s;
+    }
+    .maker .maker-name { color: var(--white); }
+    .maker:hover { border-color: var(--red); color: var(--white); }
+    .maker:hover .maker-name { color: var(--red); }
+    .maker:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
     .hero p.lead { margin-top: 28px; max-width: 620px; font-size: clamp(17px, 2.2vw, 21px); color: #cfcfcf; }
     .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
 
@@ -212,6 +222,11 @@
           <span class="badge red"><span class="dot" aria-hidden="true"></span>Privacy-First</span>
           <span class="badge">Open Source · GPLv3</span>
         </div>
+        <a class="maker" href="https://github.com/Real3rr0r303YT" target="_blank" rel="noopener noreferrer">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="maker-label">Made by</span>
+          <span class="maker-name">Real3rr0r303YT</span>
+        </a>
         <p class="lead" data-i18n="hero.subtitle">100% offline, no unnecessary permissions, uncompromising design.</p>
         <div class="cta">
           <a class="btn primary" href="#projects" data-i18n="hero.cta">Explore projects</a>
@@ -239,7 +254,7 @@
           <article class="principle">
             <span class="dm" data-dm="100%" data-size="5" aria-hidden="true"></span>
             <h3 data-i18n="p2.title">Offline & minimal permissions</h3>
-            <p data-i18n="p2.text">Apps only request what they truly need. NothingNotes and NothingPacker don't even have internet access.</p>
+            <p data-i18n="p2.text">Apps only request what they truly need. NothingNotes, NothingPacker and NothingCalendar don't even have internet access.</p>
           </article>
           <article class="principle">
             <span class="dm" data-dm="GPLV3" data-size="5" aria-hidden="true"></span>
@@ -255,7 +270,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 id="projects-title"><span class="sr-only" data-i18n="projects.title">Projects</span><span class="dm" data-dm-i18n="projects.dm" data-size="4" data-accent="last" aria-hidden="true"></span></h2>
-          <span class="label" data-i18n="projects.kicker">05 apps · one design language</span>
+          <span class="label" data-i18n="projects.kicker">06 apps · one design language</span>
         </div>
 
         <div class="cards">
@@ -378,6 +393,30 @@
             </div>
             <a class="release-link" href="https://github.com/Real3rr0r303YT/Calculator/releases/tag/v1.0.0" target="_blank" rel="noopener noreferrer">github.com/Real3rr0r303YT/Calculator/releases/tag/v1.0.0</a>
           </article>
+
+          <!-- NothingCalendar -->
+          <article class="card" aria-labelledby="calendar-title">
+            <div class="card-top"><span class="card-index">06</span><span class="dot" aria-hidden="true"></span></div>
+            <h3 id="calendar-title"><span class="sr-only">NothingCalendar</span><span class="dm" data-dm="NOTHINGCALENDAR" data-size="3.2" aria-hidden="true"></span></h3>
+            <p class="tagline" data-i18n="calendar.tagline">The minimalist calendar Nothing OS never shipped.</p>
+            <ul>
+              <li data-i18n="calendar.f1">Month, day & agenda views with a live red “now” line</li>
+              <li data-i18n="calendar.f2">Dot-matrix headers & haptic feedback everywhere</li>
+              <li data-i18n="calendar.f3">Events stay on your device – no account, no INTERNET permission</li>
+            </ul>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Kotlin</span><span class="chip">Compose</span><span class="chip">GPLv3</span></div>
+            <div class="actions">
+              <a class="btn primary" href="https://github.com/Real3rr0r303YT/NothingCalendar/releases" target="_blank" rel="noopener noreferrer" aria-label="Download NothingCalendar (GitHub Releases)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>
+                <span data-i18n="btn.download">Download</span>
+              </a>
+              <a class="btn" href="https://github.com/Real3rr0r303YT/NothingCalendar" target="_blank" rel="noopener noreferrer" aria-label="NothingCalendar – GitHub repository">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                <span data-i18n="btn.github">GitHub</span>
+              </a>
+            </div>
+            <a class="release-link" href="https://github.com/Real3rr0r303YT/NothingCalendar" target="_blank" rel="noopener noreferrer">github.com/Real3rr0r303YT/NothingCalendar</a>
+          </article>
         </div>
       </div>
     </section>
@@ -422,12 +461,12 @@
         "p1.title": "Trackers & analytics",
         "p1.text": "No telemetry, no ads, no accounts. Your data stays yours – on your device.",
         "p2.title": "Offline & minimal permissions",
-        "p2.text": "Apps only request what they truly need. NothingNotes and NothingPacker don't even have internet access.",
+        "p2.text": "Apps only request what they truly need. NothingNotes, NothingPacker and NothingCalendar don't even have internet access.",
         "p3.title": "Free & open source",
         "p3.text": "Every line of code is public and licensed under the GNU GPL v3 – audit it, fork it, improve it.",
         "projects.title": "Projects",
         "projects.dm": "PROJECTS",
-        "projects.kicker": "05 apps · one design language",
+        "projects.kicker": "06 apps · one design language",
         "call.tagline": "The privacy-friendly dialer app.",
         "call.f1": "Calls, contacts & call log – without cloud sync",
         "call.f2": "No ads, no trackers, no caller-ID data sharing",
@@ -448,6 +487,10 @@
         "calc.f1": "Fast arithmetic – no distractions",
         "calc.f2": "Zero bloat – no ads, no trackers",
         "calc.f3": "100% offline – no internet access needed",
+        "calendar.tagline": "The minimalist calendar Nothing OS never shipped.",
+        "calendar.f1": "Month, day & agenda views with a live red “now” line",
+        "calendar.f2": "Dot-matrix headers & haptic feedback everywhere",
+        "calendar.f3": "Events stay on your device – no account, no INTERNET permission",
         "btn.github": "GitHub",
         "btn.download": "Download",
         "support.title": "Support",
@@ -467,12 +510,12 @@
         "p1.title": "Tracker & Analytics",
         "p1.text": "Keine Telemetrie, keine Werbung, keine Konten. Deine Daten bleiben deine – auf deinem Gerät.",
         "p2.title": "Offline & minimale Berechtigungen",
-        "p2.text": "Die Apps fordern nur an, was sie wirklich brauchen. NothingNotes und NothingPacker haben nicht einmal Internetzugriff.",
+        "p2.text": "Die Apps fordern nur an, was sie wirklich brauchen. NothingNotes, NothingPacker und NothingCalendar haben nicht einmal Internetzugriff.",
         "p3.title": "Frei & Open Source",
         "p3.text": "Jede Codezeile ist öffentlich und steht unter der GNU GPL v3 – prüfen, forken, verbessern.",
         "projects.title": "Projekte",
         "projects.dm": "PROJEKTE",
-        "projects.kicker": "05 Apps · eine Designsprache",
+        "projects.kicker": "06 Apps · eine Designsprache",
         "call.tagline": "Die datenschutzfreundliche Telefon-App.",
         "call.f1": "Anrufe, Kontakte & Anrufliste – ohne Cloud-Sync",
         "call.f2": "Keine Werbung, keine Tracker, keine Weitergabe von Anruferdaten",
@@ -493,6 +536,10 @@
         "calc.f1": "Schnelles Rechnen – ohne Ablenkung",
         "calc.f2": "Null Ballast – keine Werbung, keine Tracker",
         "calc.f3": "100 % offline – kein Internetzugriff nötig",
+        "calendar.tagline": "Der minimalistische Kalender, den Nothing OS nie mitgeliefert hat.",
+        "calendar.f1": "Monats-, Tages- & Agenda-Ansicht mit roter Live-„Jetzt“-Linie",
+        "calendar.f2": "Dot-Matrix-Überschriften & Haptik überall",
+        "calendar.f3": "Termine bleiben auf dem Gerät – kein Konto, keine INTERNET-Berechtigung",
         "btn.github": "GitHub",
         "btn.download": "Herunterladen",
         "support.title": "Unterstützen",
